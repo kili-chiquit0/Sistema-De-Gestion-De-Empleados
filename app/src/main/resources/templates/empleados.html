@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NEXUSHR - Gestión de Empleados</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f4f7fa 0%, #e9efff 100%);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 35px 0 20px;
+            background: linear-gradient(90deg, #007bff, #00bcd4);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            animation: slideIn 0.8s ease-in-out;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 38px;
+            letter-spacing: 2px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        main {
+            margin: 40px auto;
+            width: 90%;
+            max-width: 1000px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        h2:hover {
+            color: #0056b3;
+        }
+
+        /* ==========================
+           TARJETAS DE EMPLEADOS
+        =========================== */
+        .empleado-card {
+            background: #f8faff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .empleado-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .empleado-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .empleado-info strong {
+            color: #007bff;
+        }
+
+        .empleado-actions {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #dc3545, #ff4f5e);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #b02a37, #ff2d3a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* ==========================
+           FORMULARIO
+        =========================== */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        form:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            flex: 1 1 45%;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 6px rgba(0,123,255,0.4);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(90deg, #007bff, #00bcd4);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #0066cc, #0097a7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .form-buttons {
+            width: 100%;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        /* ==========================
+           ALERTA
+        =========================== */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            z-index: 1000;
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================
+           ANIMACIONES
+        =========================== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>NEXUSHR</h1>
+    <p>Empleados registrados actualmente</p>
+</header>
+
+<main>
+    <div id="empleados-container"></div>
+
+    <h2>Agregar Nuevo Empleado</h2>
+    <form id="empleado-form">
+        <label>Nombre:
+            <input type="text" id="nombre" required>
+        </label>
+        <label>Apellido:
+            <input type="text" id="apellido" required>
+        </label>
+        <label>Email:
+            <input type="email" id="email" required>
+        </label>
+        <label>Departamento:
+            <input type="text" id="departamento" required>
+        </label>
+        <label>Salario:
+            <input type="number" id="salario" required>
+        </label>
+        <label>Activo:
+            <input type="checkbox" id="activo">
+        </label>
+
+        <div class="form-buttons">
+            <button type="submit">Guardar</button>
+        </div>
+    </form>
+</main>
+
+<div id="alert" class="alert">Empleado agregado correctamente</div>
+
+<script>
+    function mostrarAlerta(mensaje, tipo = 'success') {
+        const alertBox = document.getElementById('alert');
+        alertBox.textContent = mensaje;
+        alertBox.style.background = tipo === 'success'
+            ? 'linear-gradient(90deg, #4caf50, #81c784)'
+            : 'linear-gradient(90deg, #f44336, #e57373)';
+        alertBox.classList.add('show');
+        setTimeout(() => alertBox.classList.remove('show'), 3000);
+    }
+
+    function cargarEmpleados() {
+        fetch('/api/empleados')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('empleados-container');
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; color:#777;">No hay empleados registrados.</p>`;
+                    return;
+                }
+
+                data.forEach(empleado => {
+                    const card = document.createElement('div');
+                    card.className = 'empleado-card';
+                    card.innerHTML = `
+                        <div class="empleado-info">
+                            <strong>${empleado.nombre} ${empleado.apellido}</strong>
+                            <span><b>Email:</b> ${empleado.email}</span>
+                            <span><b>Departamento:</b> ${empleado.departamento}</span>
+                            <span><b>Salario:</b> $${empleado.salario.toFixed(2)}</span>
+                            <span><b>Activo:</b> ${empleado.activo ? 'Sí' : 'No'}</span>
+                        </div>
+                        <div class="empleado-actions">
+                            <button class="btn-danger" onclick="eliminarEmpleado(${empleado.id})">Retirar</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => console.error('Error al cargar empleados:', error));
+    }
+
+    function eliminarEmpleado(id) {
+        if (confirm('¿Deseas retirar este empleado?')) {
+            fetch(`/api/empleados/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    mostrarAlerta('Empleado retirado correctamente', 'success');
+                    cargarEmpleados();
+                } else {
+                    mostrarAlerta('Error al retirar empleado', 'error');
+                }
+            })
+            .catch(() => mostrarAlerta('Error de conexión con el servidor', 'error'));
+        }
+    }
+
+    document.getElementById('empleado-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const nuevoEmpleado = {
+            nombre: document.getElementById('nombre').value,
+            apellido: document.getElementById('apellido').value,
+            email: document.getElementById('email').value,
+            departamento: document.getElementById('departamento').value,
+            salario: parseFloat(document.getElementById('salario').value),
+            activo: document.getElementById('activo').checked,
+        };
+
+        fetch('/api/empleados', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevoEmpleado)
+        })
+        .then(response => {
+            if (response.ok) {
+                mostrarAlerta('Empleado agregado correctamente', 'success');
+                cargarEmpleados();
+                document.getElementById('empleado-form').reset();
+            } else {
+                mostrarAlerta('Error al guardar empleado (email duplicado)', 'error');
+            }
+        })
+        .catch(() => mostrarAlerta('Error de conexión con el servidor', 'error'));
+    });
+
+    cargarEmpleados();
+</script>
+</body>
+</html>

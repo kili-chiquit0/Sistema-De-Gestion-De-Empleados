@@ -1,0 +1,5 @@
+com\nexushr\spring\app\NexusHrApplication.class
+com\nexushr\spring\app\repository\EmpleadoRepository.class
+com\nexushr\spring\app\controller\EmpleadoController.class
+com\nexushr\spring\app\model\Empleado.class
+com\nexushr\spring\app\controller\ViewController.class
